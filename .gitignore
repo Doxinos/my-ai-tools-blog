@@ -1,2 +1,6 @@
 
 my-ai-tools-blog
+
+# macOS
+.DS_Store
+**/.DS_Store
