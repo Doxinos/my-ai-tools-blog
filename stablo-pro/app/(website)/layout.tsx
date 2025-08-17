@@ -19,10 +19,11 @@ const lora = Lora({
 
 async function sharedMetaData(params: any) {
   const settings = await getSettings();
+  const siteUrl = process.env.SITE_URL || settings?.url || "http://localhost:3000";
 
   return {
     // enable this for resolving opengraph images
-    // metadataBase: new URL(settings.url),
+    metadataBase: new URL(siteUrl),
     title: {
       default:
         settings?.title ||
