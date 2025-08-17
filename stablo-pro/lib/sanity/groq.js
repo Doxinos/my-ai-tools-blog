@@ -2,7 +2,37 @@ import { groq } from "next-sanity";
 
 // Get all posts
 export const postquery = groq`
-*[_type == "post"] | order(publishedAt desc, _createdAt desc) {
+// Mixed listing: regular posts and best-tools docs
+(
+  *[_type == "post"] {
+    _type,
+    _id,
+    _createdAt,
+    publishedAt,
+    mainImage {
+      ...,
+      "blurDataURL":asset->metadata.lqip,
+      "ImageColor": asset->metadata.palette.dominant.background,
+    },
+    featured,
+    excerpt,
+    slug,
+    title,
+    author-> { _id, image, slug, name },
+    categories[]->
+  },
+  *[_type == "bestToolsContent"] {
+    _type,
+    _id,
+    _createdAt,
+    "publishedAt": _createdAt,
+    // no mainImage by default; leave null
+    featured: false,
+    excerpt: metaDescription,
+    slug,
+    title,
+  }
+) | order(coalesce(publishedAt,_createdAt) desc, _createdAt desc) {
   _id,
   _createdAt,
   publishedAt,
@@ -15,12 +45,7 @@ export const postquery = groq`
   excerpt,
   slug,
   title,
-  author-> {
-    _id,
-    image,
-    slug,
-    name
-  },
+  author-> { _id, image, slug, name },
   categories[]->,
 }
 `;
