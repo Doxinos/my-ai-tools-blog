@@ -2,51 +2,43 @@ import { groq } from "next-sanity";
 
 // Get all posts
 export const postquery = groq`
-// Mixed listing: regular posts and best-tools docs
 (
-  *[_type == "post"] {
+  *[_type == "post"]{
     _type,
     _id,
     _createdAt,
     publishedAt,
-    mainImage {
-      ...,
-      "blurDataURL":asset->metadata.lqip,
-      "ImageColor": asset->metadata.palette.dominant.background,
-    },
+    mainImage{..., "blurDataURL":asset->metadata.lqip, "ImageColor": asset->metadata.palette.dominant.background},
     featured,
     excerpt,
     slug,
     title,
-    author-> { _id, image, slug, name },
+    author->{ _id, image, slug, name },
     categories[]->
-  },
-  *[_type == "bestToolsContent"] {
+  }
+  +
+  *[_type == "bestToolsContent"]{
     _type,
     _id,
     _createdAt,
     "publishedAt": _createdAt,
-    // no mainImage by default; leave null
+    mainImage: null,
     featured: false,
     excerpt: metaDescription,
     slug,
-    title,
+    title
   }
-) | order(coalesce(publishedAt,_createdAt) desc, _createdAt desc) {
+) | order(coalesce(publishedAt, _createdAt) desc, _createdAt desc){
   _id,
   _createdAt,
   publishedAt,
-  mainImage {
-    ...,
-    "blurDataURL":asset->metadata.lqip,
-    "ImageColor": asset->metadata.palette.dominant.background,
-  },
+  mainImage{..., "blurDataURL":asset->metadata.lqip, "ImageColor": asset->metadata.palette.dominant.background},
   featured,
   excerpt,
   slug,
   title,
-  author-> { _id, image, slug, name },
-  categories[]->,
+  author->{ _id, image, slug, name },
+  categories[]->
 }
 `;
 // Get all posts with 0..limit
