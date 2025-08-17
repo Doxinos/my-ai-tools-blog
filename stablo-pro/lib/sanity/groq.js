@@ -149,3 +149,26 @@ export const bestToolsQuery = groq`
   }
 }
 `;
+
+// Best Tools: paths for SSG
+export const bestToolsSlugsQuery = groq`
+*[_type == "bestToolsContent" && defined(slug.current)][].slug.current
+`;
+
+// Best Tools: single by slug
+export const bestToolsBySlugQuery = groq`
+*[_type == "bestToolsContent" && slug.current == $slug][0]{
+  title,
+  metaDescription,
+  introContent,
+  rankingCriteriaContent,
+  conclusionContent,
+  bestTools[]{
+    id,
+    bestFor,
+    features,
+    pricing,
+    content
+  }
+}
+`;

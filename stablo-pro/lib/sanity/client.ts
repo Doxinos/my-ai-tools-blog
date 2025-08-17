@@ -12,7 +12,9 @@ import {
   postsbycatquery,
   catpathquery,
   catquery,
-  searchquery
+  searchquery,
+  bestToolsSlugsQuery,
+  bestToolsBySlugQuery
 } from "./groq";
 import { createClient } from "next-sanity";
 
@@ -129,4 +131,20 @@ export async function searchPosts(query = "") {
     );
   }
   return [];
+}
+
+// Best Tools helpers
+export async function getAllBestToolsSlugs() {
+  if (client) {
+    const slugs = (await client.fetch(bestToolsSlugsQuery)) || [];
+    return slugs.map(slug => ({ slug }));
+  }
+  return [];
+}
+
+export async function getBestToolsBySlug(slug: string) {
+  if (client) {
+    return (await client.fetch(bestToolsBySlugQuery, { slug })) || null;
+  }
+  return null;
 }
