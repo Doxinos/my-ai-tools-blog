@@ -42,9 +42,7 @@ function RelatedPosts({ related, pathPrefix }) {
       <h3 className="text-2xl font-bold dark:text-white">Related</h3>
       <div className="grid gap-6 mt-6">
         {related.slice(0, 3).map((item, index) => {
-          const imageProps = item?.image
-            ? urlForImage(item?.image)
-            : null;
+          const imageProps = item?.image ? urlForImage(item.image) : null;
           return (
             <Link
               key={index}
@@ -53,14 +51,18 @@ function RelatedPosts({ related, pathPrefix }) {
               }`}>
               <div className="flex gap-5">
                 <div className="relative w-24 h-20 overflow-hidden rounded-md shrink-0">
-                  <Image
-                    src={imageProps.src}
-                    loader={imageProps.loader}
-                    alt={item.title || "Thumbnail"}
-                    fill
-                    sizes="100vw"
-                    className="object-cover"
-                  />
+                  {imageProps ? (
+                    <Image
+                      src={imageProps.src}
+                      loader={imageProps.loader}
+                      alt={item.title || "Thumbnail"}
+                      fill
+                      sizes="100vw"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="h-full w-full bg-gray-200 dark:bg-gray-700" />
+                  )}
                 </div>
                 <div>
                   <h3 className="font-medium dark:text-white">
