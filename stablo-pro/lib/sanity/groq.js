@@ -130,3 +130,22 @@ export const allauthorsquery = groq`
  'slug': slug.current,
 }
 `;
+
+// Best Tools singleton (first document)
+export const bestToolsQuery = groq`
+*[_type == "bestToolsContent"][0]{
+  title,
+  "slug": slug.current,
+  metaDescription,
+  introContent,
+  rankingCriteriaContent,
+  conclusionContent,
+  bestTools[]{
+    id,
+    bestFor,
+    features,
+    pricing,
+    content
+  }
+}
+`;
