@@ -2,39 +2,18 @@ import { groq } from "next-sanity";
 
 // Get all posts
 export const postquery = groq`
-(
-  *[_type == "post"]{
-    _type,
-    _id,
-    _createdAt,
-    publishedAt,
-    mainImage{..., "blurDataURL":asset->metadata.lqip, "ImageColor": asset->metadata.palette.dominant.background},
-    featured,
-    excerpt,
-    slug,
-    title,
-    author->{ _id, image, slug, name },
-    categories[]->
-  }
-  +
-  *[_type == "bestToolsContent"]{
-    _type,
-    _id,
-    _createdAt,
-    "publishedAt": _createdAt,
-    mainImage: null,
-    featured: false,
-    excerpt: metaDescription,
-    slug,
-    title
-  }
-) | order(coalesce(publishedAt, _createdAt) desc, _createdAt desc){
+*[_type in ["post","bestToolsContent"]]
+| order(coalesce(publishedAt, _createdAt) desc, _createdAt desc) {
+  _type,
   _id,
   _createdAt,
-  publishedAt,
+  "publishedAt": coalesce(publishedAt, _createdAt),
   mainImage{..., "blurDataURL":asset->metadata.lqip, "ImageColor": asset->metadata.palette.dominant.background},
   featured,
-  excerpt,
+  "excerpt": select(
+    _type == "post" => excerpt,
+    _type == "bestToolsContent" => metaDescription
+  ),
   slug,
   title,
   author->{ _id, image, slug, name },
